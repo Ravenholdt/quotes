@@ -1,5 +1,5 @@
 function start(){
-	axios.post('/update.php', {'action': 'start'})
+	axios.post('update.php', {'action': 'start'})
 		.then(function (response) {
 			update(response.data);
         });
@@ -13,7 +13,7 @@ function change(a){
     if (l1 !== 'true' && l2 !== 'true') {
 		return;
     }
-	axios.post('/update.php', {
+	axios.post('update.php', {
 		'action': 'change',
 		'id1': img1.attr('data-id'),
 		'id2': img2.attr('data-id'),

@@ -19,7 +19,7 @@
 	<div id="header">
 		<h1>Rankings</h1>
 		<div>Total amount of matches: <span id="matches">0</span></div>
-		<div><a id="rank" href="/">Back to voting</a></div>
+		<div><a id="rank" href="#">Back to voting</a></div>
 		<div class="inline">
 			<label for="dir">Sort order:</label>
 			<select name="dir" id="dir">
@@ -74,6 +74,10 @@
             });
             $("#nr").val(nr).change(function () {
                 updateData('nr', $(this).val())
+            });
+			$('#rank').click(function (event) {
+				event.preventDefault();
+				location.href = window.location.href.split('?')[0].replace("rankings.html", "");
             });
         })
 	</script>
