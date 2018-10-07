@@ -1,31 +1,47 @@
-<?php 
+<?php
 
+use Zelenin\Elo\Match;
+use Zelenin\Elo\Player;
 
-// Change database information              Database    Username     Password
-// 				              name
-$pdo = new PDO("mysql:host=127.0.0.1;dbname=loek",'loek','DsH3e4X6rS57TQXU');
+require_once 'init.php';
 
+class ReturnInfo {
+    /**
+     * @var int
+     */
+    public $id;
+    /**
+     * @var string
+     */
+    public $src;
 
-function klogic($rating,$matchcount){
-	if($rating>2400)
-		return 20;
-	else 
-		return 40;
+    /**
+     * @var int
+     */
+    public $rating;
+    /**
+     * @var int
+     */
+    public $matches;
+
+    public function __construct(StdClass $data) {
+        $this->id = (int) $data->id;
+        $this->src = $data->src;
+        $this->rating = (int) $data->rating;
+        $this->matches = (int) $data->matches;
+    }
 }
 
-$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+function newImages(){
+	$sql = "SELECT * FROM `images` ORDER by RAND() LIMIT 2;";
+    $result = array();
 
-function newImages($pdo){
-	$sql="SELECT * from `images` ORDER by RAND() LIMIT 2;";
-        $result=array();
-        $row = $pdo->query($sql);
-        $first = $row->fetch(PDO::FETCH_ASSOC);
-        $result['id1']=$first['id'];
-        $result['src1']=$first['src'];
-        $first = $row->fetch(PDO::FETCH_ASSOC);
-        $result['id2']=$first['id'];
-        $result['src2']=$first['src'];
-        echo json_encode($result);
+    $row = DB::pdo()->query($sql);
+
+    $result[] = new ReturnInfo($row->fetch(PDO::FETCH_OBJ));
+    $result[] = new ReturnInfo($row->fetch(PDO::FETCH_OBJ));
+
+    echo json_encode($result);
 }
 
 if ($_SERVER['REQUEST_METHOD']=="POST"){
@@ -33,66 +49,64 @@ if ($_SERVER['REQUEST_METHOD']=="POST"){
 	header('Content-Type:application/json;Charset:UTF8;');
 	$input = json_decode(file_get_contents("php://input"));
 
-	if($input->jsontype=="start"){
+	if($input->action=="start"){
+		newImages();
+	} else if($input->action == "change"){
 
-		newImages($pdo);
-
-	} else if($input->jsontype=="change"){
-
-		$sql=$pdo->prepare("SELECT * from `images` where id = :id");
+		$sql = DB::pdo()->prepare("SELECT * FROM images WHERE id = :id");
 
 		$score1= $input->score1;
 		$score2= $input->score2;
 
-		if (($score1==1&&$score2==0)||($score1==0&&$score2==1)){
-			$sql->execute(array(':id'=>$input->id1));
-			$first = $sql->fetch(PDO::FETCH_ASSOC);
-			$rating1 = $first['rating'];
-			$matches1 = $first['matches'];
+        $sql->execute(array(':id'=>$input->id1));
+        $first = $sql->fetch(PDO::FETCH_OBJ);
 
-			$sql->execute(array(':id'=>$input->id2));
-			$second= $sql->fetch(PDO::FETCH_ASSOC);
-			$rating2 = $second['rating'];
-			$matches2 = $second['matches'];
+        $sql->execute(array(':id'=>$input->id2));
+        $second= $sql->fetch(PDO::FETCH_OBJ);
 
-			$k1 = klogic($rating1,$matches1);
-			$k2 = klogic($rating2,$matches2);
+        $match = new Match(new Player($first->rating), new Player($second->rating));
+        $match->setScore($score1, $score2)->setK(32)->count();
 
-			$matches1++;
-			$matches2++;
+        $ins = DB::pdo()->prepare("UPDATE images SET matches = :matches, rating = :ratings WHERE id = :id;");
+        $ins->execute(array(':id' => $input->id1, ':matches' => $first->matches + 1,':ratings' => $match->getPlayer1()->getRating()));
+        $ins->execute(array(':id' => $input->id2, ':matches' => $second->matches + 1,':ratings' => $match->getPlayer2()->getRating()));
 
-			$power=($rating2-$rating1)/400;
-			$ten = pow(10,$power);
-			$exp1 = 1/(1+$ten);
-			$exp2 = 1-$exp1;
+		newImages();
 
-			$newrating1 =round($rating1 + $k1*( $score1 - $exp1));
-			$newrating2 =round($rating2 + $k2*( $score2 - $exp2));
+	} else if ($input->action == "rankings"){
+	    $dir = 'DESC';
+	    if (isset($input->dir) && $input->dir === 'asc') {
+	        $dir = 'ASC';
+        }
+        $order = 'rating';
+        if (isset($input->order) && $input->order === 'matches') {
+            $order = 'matches';
+        }
 
-			$ins=$pdo->prepare("update `images` set matches = :matches, rating = :ratings where id = :id;");
-			$ins->execute(array(':id'=>$input->id1, ':matches'=>$matches1,':ratings'=>$newrating1));
-			$ins->execute(array(':id'=>$input->id2, ':matches'=>$matches2,':ratings'=>$newrating2));
 
-		}
+        if (!isset($input->nr)) {
+            $sql = DB::pdo()->prepare('SELECT * FROM images ORDER BY ' . $order .  ' ' . $dir . ';');
+            $data = $sql->execute();
+        } else if (is_numeric($input->nr)) {
+            $sql = DB::pdo()->prepare('SELECT * FROM images ORDER BY ' . $order .  ' ' . $dir . ' LIMIT ?;');
+            $sql->bindValue(1, $input->nr, PDO::PARAM_INT);
+            $data = $sql->execute();
+        } else {
+            http_response_code(400);
+        }
 
-		newImages($pdo);
-
-	} else if ($input->jsontype=="rankings"){
-
-		$sql="SELECT * from `images` ORDER by rating DESC LIMIT 10;";
-		$result=array();
-		$i=1;
-		foreach($pdo->query($sql) as $row){
-			$result['r'.$i]=$row['src'];
+        $result = array();
+		$i = 1;
+		foreach($sql->fetchAll(PDO::FETCH_ASSOC) as $row) {
+			$result[] = $row;
 			$i++;
 		}
-		echo json_encode($result);
+		$obj = new StdClass;
+		$obj->matches = (int)DB::pdo()->query("SELECT (SELECT SUM(matches) FROM images) / 2")->fetch(PDO::FETCH_COLUMN);
+		$obj->ranks = $result;
+		echo json_encode($obj);
 	}
 
 } else {
-
 	http_response_code(405);
-
 }
-
-?>

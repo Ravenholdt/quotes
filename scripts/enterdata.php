@@ -7,14 +7,18 @@
  * 	php enterdata.php < filename
  *
  */
+include_once '../init.php';
 
-	$pdo = new PDO('mysql:host=127.0.0.1;dbname=loek','loek','DsH3e4X6rS57TQXU');
-	$ins = $pdo->prepare("insert into images (src) values(?)");
-	$file = fopen("php://stdin","r");
-	$line = fgets($file);
-while(trim($line)!=""){
-	echo trim($line);
+$ins = DB::pdo()->prepare("insert into images (src) values(?)");
+$file = fopen("php://stdin","r");
+$line = trim(fgets($file));
+
+while($line != "") {
+	if (substr($line, 0, 5) === 'http:') {
+        $line = trim(fgets($file));
+        continue;
+    }
+    echo $line . PHP_EOL;
 	$ins->execute(array($line));
-	$line = fgets($file);
+	$line = trim(fgets($file));
 }
-?>

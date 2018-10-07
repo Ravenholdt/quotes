@@ -1,22 +1,45 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<title>Sjysta Lökar</title>
-<link rel="stylesheet" type="text/css" href="main.css">
-<script type="text/javascript" src="index.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Sjysta Lökar</title>
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="index.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
 </head>
-<body onLoad="start();">
-<div id="container">
-	<span id="leftpane" class="pane" onClick="change(1)">
-		<img class="image" id="img1"  src="#" />	
-	</span>
+<body onload="start()">
+	<div id="container">
+		<h1>Sjysta Lökar</h1>
+		<div id="area">
+			<div id="leftpane" class="pane" onClick="change(1)">
+				<img style="display: none" class="image" id="img1" data-l="false" src="#" />
+				<div class="spinner"></div>
+			</div>
 
-	<span id="or">	<h2>Or</h2>  </span>
+			<div id="or">
+				<h2>OR</h2>
+			</div>
 
-	<span id="rightpane" class="pane" onClick="change(2)">
-		<img class="image" id="img2" src="#" />	
-
-	</span>
-	
-	<a id="rank" href="rankings.html">Rankings</a>
-</div>
+			<div id="rightpane" class="pane" onClick="change(2)">
+				<img style="display: none" class="image" id="img2" data-l="false" src="#" />
+				<div class="spinner"></div>
+			</div>
+		</div>
+		<a id="rank" href="rankings.html">Rankings</a>
+	</div>
+	<script>
+		$(function () {
+            $('#img1').on('load', function () {
+                loaded(1);
+            });
+            $('#img2').on('load', function () {
+                loaded(2);
+            });
+        })
+	</script>
 </body>
+</html>

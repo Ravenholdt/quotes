@@ -1,0 +1,22 @@
+{
+  "name": "Ravenholt/loek",
+  "description": "Loek ranking system",
+  "minimum-stability": "dev",
+  "license": "All Rights Reserved",
+  "authors": [
+    {
+      "name": "Null",
+      "email": "null@totallylegit.se"
+    },
+    {
+      "name": "Berg",
+      "email": "gurreja@gmail.com"
+    }
+  ],
+  "require": {
+    "ext-pdo": "*",
+    "ext-json": "*",
+    "vlucas/phpdotenv": "^2.5@dev",
+    "zelenin/elo": "dev-master"
+  }
+}

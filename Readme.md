@@ -1,31 +1,24 @@
-# Facemash
+# Loek
 
-This is my implementation of the facemash website shown in the film "__The Social Network__". 
-Thanks to my friend Allwin for this idea.
+This is an implementation of Elo to rate onions, it was made as an inside joke but can be reused my anyone.
 
-I used the [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) to rank the images.
+The [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) was used to rank the images.
 
-images.sql is the sql dump of the "images" table that the php code needs. The scripts folder has some php scripts I used to populate the table with links to images.
+`images.sql` is the sql creation file for the "images" table that the php code needs. 
+
+The scripts folder has some php scripts used to populate the table with links to images.
 
 ### Steps to deploy the website
-1. Install Apache, MySQL and PHP.
+1. Install Apache, MySQL, PHP and [Composer](https://getcomposer.org/).
 
-2. Change database name, username and password in update.php file.
+2. Copy the `.env.example`and rename it to `.env` and change the values in it 
 
-3. Import the images table from images.sql. In PHPMyAdmin we can do this by clicking on import tab and loading the images.sql file.
+3. Import the images table from `images.sql`. This can be done in multiple way depending on how you communicate with your database.
 
 4. Add links to images using the php scripts in the scripts folder.
-    * photo.php is used to get links from wikipedia.
-    Change the $url value in the photo.php and run it in the linux commandline as ```php photo.php > linkfile```
-    This will create a file named linkfile with all the links.
-    To view the links while running the script use  ``` tail -f linkfile```
-    * enterdata.php is used to enter all the links into the database.
-    Run this in the linux commandline as ```php enterdata.php < linkfile```
+    * `enterdata.php is used to enter all the links into the database.
+    Run this in the linux commandline as `php enterdata.php < linkfile.txt`
 
-5. Move the following files to the apache root directory. If you use linux move these files to /var/www/html/ .
-    * index.php
-    * index.js
-    * main.css
-    * update.php
+5. Run `composer install` or `php composer.phar install` depending on your install 
 
- 6. Start apache and visit http://localhost.
+6. Start apache and visit your page.

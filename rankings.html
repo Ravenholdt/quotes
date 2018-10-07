@@ -1,108 +1,80 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-<title>Sjysta Lökar Rankings</title>
-<script type="text/javascript" >
-function rankings(){
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST","update.php",true);
-	xhr.overrideMimeType("application/json");
-	xhr.send('{"jsontype":"rankings"}');
-	xhr.addEventListener("readystatechange",processRequest,false);
-	function processRequest(e){
-		if (xhr.readyState==4&&xhr.status==200){
-			var response = JSON.parse(xhr.responseText);
-			document.getElementById("img1").src=response.r1;
-			document.getElementById("img2").src=response.r2;
-			document.getElementById("img3").src=response.r3;
-			document.getElementById("img4").src=response.r4;
-			document.getElementById("img5").src=response.r5;
-			document.getElementById("img6").src=response.r6;
-			document.getElementById("img7").src=response.r7;
-			document.getElementById("img8").src=response.r8;
-			document.getElementById("img9").src=response.r9;
-			document.getElementById("img10").src=response.r10;
-		}
-	}
-}
-</script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Sjysta Lökar Rankning</title>
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.0/mustache.min.js"></script>
+	<script type="text/javascript" src="index.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
 <style>
-body {
-	border:0px;
-	padding:0px;
-	background-color:silver;
-}
-#header {
-	background-color:white;
-	margin:10px 10px 0px 10px;
-	text-align:center;
-	text-decoration:bold;
-	padding-top:10px;
-	padding-bottom:10px;
-}
-div.pic {
-	background-color:white;
-	display:block;
-	width:280px;
-	height:420px;
-	float:left;
-	margin:10px 10px 10px 10px;
-}
-img.image {
-	position:relative;
-	top:40%;
-	left:50%;
-	transform:translate(-50%,-50%);
-	max-height:100%;
-	max-width:100%;
-}
-div.rank {
-	margin:20px auto;
-	text-align:center;
-	font-size:20px;
-}
 
 </style>
 </head>
-<body onLoad="rankings();">
-	<div id = "header">Rankings</div>
-	<div class="pic">
-		<div class="rank">1</div>
-		<img class="image" id="img1" src=#/>
+<body onLoad="getRankings();">
+	<div id="header">
+		<h1>Rankings</h1>
+		<div>Total amount of matches: <span id="matches">0</span></div>
+		<div><a id="rank" href="/">Back to voting</a></div>
+		<div class="inline">
+			<label for="dir">Sort order:</label>
+			<select name="dir" id="dir">
+				<option value="desc">Descending</option>
+				<option value="asc">Ascending</option>
+			</select>
+		</div>
+		<div class="inline">
+			<label for="order">Sort by:</label>
+			<select name="order" id="order">
+				<option value="rankings">Rankings</option>
+				<option value="matches">Matches</option>
+			</select>
+		</div>
+		<div class="inline">
+			<label for="nr">Show nr:</label>
+			<select name="nr" id="nr">
+				<option value="5">5</option>
+				<option selected value="10">10</option>
+				<option value="20">20</option>
+				<option value="50">50</option>
+				<option value="100">100</option>
+				<option value="all">All</option>
+			</select>
+		</div>
 	</div>
-	<div class="pic">
-		<div class="rank">2</div>
-		<img class="image" id="img2" src=#/>
+	<div id="pics">
+
 	</div>
-	<div class="pic">
-		<div class="rank">3</div>
-		<img class="image" id="img3" src=#/>
-	</div>
-	<div class="pic">
-		<div class="rank">4</div>
-		<img class="image" id="img4" src=#/>
-	</div>
-	<div class="pic">
-		<div class="rank">5</div>
-		<img class="image" id="img5" src=#/>
-	</div>
-	<div class="pic">
-		<div class="rank">6</div>
-		<img class="image" id="img6" src=#/>
-	</div>
-	<div class="pic">
-		<div class="rank">7</div>
-		<img class="image" id="img7" src=#/>
-	</div>
-	<div class="pic">
-		<div class="rank">8</div>
-		<img class="image" id="img8" src=#/>
-	</div>
-	<div class="pic">
-		<div class="rank">9</div>
-		<img class="image" id="img9" src=#/>
-	</div>
-	<div class="pic">
-		<div class="rank">10</div>
-		<img class="image" id="img10" src=#/>
-	</div>
+	<script id="template" type="x-tmpl-mustache">
+        <div class="pic">
+            <div class="rank">{{ rank }}</div>
+            <div class="pic-container">
+				<img class="image" src="{{ src }}"/>
+			</div>
+			<div class="info">Rank: {{ rating }}</div>
+			<div class="info">Matches: {{ matches }}</div>
+        </div>
+	</script>
+	<script>
+		$(function () {
+            let urlParams = new URLSearchParams(window.location.search);
+            let dir = getOrDefault(urlParams, 'dir', 'desc');
+            let order = getOrDefault(urlParams, 'order', 'rankings');
+            let nr = getOrDefault(urlParams, 'nr', 10);
+
+            $("#dir").val(dir).change(function () {
+                updateData('dir', $(this).val())
+            });
+            $("#order").val(order).change(function () {
+                updateData('order', $(this).val())
+            });
+            $("#nr").val(nr).change(function () {
+                updateData('nr', $(this).val())
+            });
+        })
+	</script>
 </body>
