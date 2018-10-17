@@ -5,7 +5,7 @@ function start(){
         });
 }
 
-function change(a){
+function change(a, swipe = false){
     let img1 = $('#img1');
     let img2 = $('#img2');
     let l1 = img1.attr('data-l');
@@ -18,7 +18,8 @@ function change(a){
 		'id1': img1.attr('data-id'),
 		'id2': img2.attr('data-id'),
 		'score1': a === 1 ? 1: 0,
-		'score2': a === 2 ? 1: 0
+		'score2': a === 2 ? 1: 0,
+        'swipe': swipe
 	}).then(function (response) {
         update(response.data);
     });
@@ -109,18 +110,15 @@ function swipe(id, dir) {
     // swipeDir contains either "none", "left", "right", "top", or "down"
     if (haveAllLoaded() && (dir === "left" || dir === "right")) {
         $("#" + (id === 1 ? "left": "right") + "pane").velocity({
-            left: dir === "left" ? -400: 400,
+            left: dir === "left" ? -800: 800,
             opacity: 0
         }, {
-            duration: 200,
+            duration: 300,
             complete: function (elements) {
-                elements.velocity({left: 0}, {
-                    duration: 0,
-                    complete: function (elements) {
-                        elements.velocity({opacity: 1}, {duration: 0});
-                        change(id);
-                    }
+                elements.velocity({left: 0, opacity: 1}, {
+                    duration: 0
                 });
+                change(id, true);
             }
         });
     }
@@ -134,7 +132,7 @@ function swipeDetect(el, callback){
         startY,
         distX,
         distY,
-        threshold = 150, //required min distance traveled to be considered swipe
+        threshold = 100, //required min distance traveled to be considered swipe
         restraint = 100, // maximum distance allowed at the same time in perpendicular direction
         allowedTime = 300, // maximum time allowed to travel that distance
         elapsedTime,
@@ -166,6 +164,9 @@ function swipeDetect(el, callback){
             else if (Math.abs(distY) >= threshold && Math.abs(distX) <= restraint){ // 2nd condition for vertical swipe met
                 swipeDir = (distY < 0)? 'up' : 'down'; // if dist traveled is negative, it indicates up swipe
             }
+        }
+        if (swipeDir === 'none') {
+            $(touchSurface).trigger('click');
         }
         handleSwipe(swipeDir);
         e.preventDefault()
