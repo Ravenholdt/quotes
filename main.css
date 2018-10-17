@@ -73,12 +73,13 @@ html {
 .pane {
 	min-height: 400px;
 	min-width: 300px;
-	border: 2px solid black;
+	border: 1px solid #cccccc;
 	border-radius: 5px;
-	background-color: #fcfcfc;
+	background-color: #ffffff;
 	overflow: hidden;
 	position: relative;
 	cursor: pointer;
+	box-shadow: #dddddd 5px 5px 20px;
 }
 
 #or h2 {
