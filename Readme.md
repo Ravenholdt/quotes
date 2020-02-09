@@ -15,7 +15,8 @@ The scripts folder has some php scripts used to populate the table with links to
 
 3. Import the quotes table from `quotes.sql`. This can be done in multiple way depending on how you communicate with your database.
 
-4. Add quotes using the php scripts in the scripts folder.
+4. Add quotes using the php scripts in the scripts folder. The format of the quote text is as following
+    * `Some quote text` following by ` § ` and the `Context`, so `Some quote text § Context`
     * `enterdata.php is used to enter all the quotes into the database.
     Run this in the linux commandline as `php enterdata.php < quotes.txt`
 

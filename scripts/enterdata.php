@@ -9,12 +9,19 @@
  */
 include_once '../init.php';
 
-$ins = DB::pdo()->prepare("insert into quotes (quote) values(?)");
+$ins = DB::pdo()->prepare("insert into quotes (quote, context) values(?, ?)");
 $file = fopen("php://stdin","r");
 $line = trim(fgets($file));
 
 while($line != "") {
     echo $line . PHP_EOL;
-	$ins->execute(array($line));
+    $quote = explode('§', $line, 2);
+    if (!isset($quote[1])) {
+        $quote[1] = '';
+    }
+    for ($i = 0; $i < count($quote); $i++) {
+        $quote[$i] = trim($quote[$i]);
+    }
+	$ins->execute($quote);
 	$line = trim(fgets($file));
 }

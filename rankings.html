@@ -53,7 +53,10 @@
         <div class="pic">
             <div class="rank">{{ rank }}</div>
             <div class="pic-container">
-				<span class="quote">{{ quote }}</span>
+				<div class="quote-container">
+					<blockquote class="quote" id="quote1">{{ quote }}</blockquote>
+					<footer class="context" id="context1">{{ context }}</footer>
+				</div>
 			</div>
 			<div class="info">Rank: {{ rating }}</div>
 			<div class="info">Matches: {{ matches }}</div>

@@ -18,6 +18,11 @@ class ReturnInfo {
     public $quote;
 
     /**
+     * @var string
+     */
+    public $context;
+
+    /**
      * @var int
      */
     public $rating;
@@ -30,6 +35,7 @@ class ReturnInfo {
     public function __construct(StdClass $data) {
         $this->id = (int) $data->id;
         $this->quote = $data->quote;
+        $this->context = $data->context;
         $this->rating = (int) $data->rating;
         $this->matches = (int) $data->matches;
     }
