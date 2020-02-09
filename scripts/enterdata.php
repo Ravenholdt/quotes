@@ -15,7 +15,7 @@ $line = trim(fgets($file));
 
 while($line != "") {
     echo $line . PHP_EOL;
-    $quote = explode('§', $line, 2);
+    $quote = explode(' - ', $line, 2);
     if (!isset($quote[1])) {
         $quote[1] = '';
     }
