@@ -6,19 +6,22 @@ use Zelenin\Elo\Player;
 require_once 'init.php';
 
 class ReturnInfo {
+
     /**
      * @var int
      */
     public $id;
+
     /**
      * @var string
      */
-    public $src;
+    public $quote;
 
     /**
      * @var int
      */
     public $rating;
+
     /**
      * @var int
      */
@@ -26,14 +29,14 @@ class ReturnInfo {
 
     public function __construct(StdClass $data) {
         $this->id = (int) $data->id;
-        $this->src = $data->src;
+        $this->quote = $data->quote;
         $this->rating = (int) $data->rating;
         $this->matches = (int) $data->matches;
     }
 }
 
-function newImages(){
-	$sql = "SELECT * FROM `images` ORDER by RAND() LIMIT 2;";
+function newQuotes(){
+	$sql = "SELECT * FROM `quotes` ORDER by RAND() LIMIT 2;";
     $result = array();
 
     $row = DB::pdo()->query($sql);
@@ -50,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
 	$input = json_decode(file_get_contents("php://input"));
 
 	if($input->action == "start"){
-		newImages();
+		newQuotes();
 	} else if($input->action == "change"){
 
-		$sql = DB::pdo()->prepare("SELECT * FROM images WHERE id = :id");
+		$sql = DB::pdo()->prepare("SELECT * FROM quotes WHERE id = :id");
 
 		$score1 = $input->score1;
 		$score2 = $input->score2;
@@ -71,8 +74,8 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
 
         $leftWon = $score1 == 1;
         $rightWon = $score2 == 1;
-        $ins1 = DB::pdo()->prepare("UPDATE images SET matches = :matches, rating = :ratings, leftWon = :leftWon, topSwipe = :topSwipe WHERE id = :id;");
-        $ins2 = DB::pdo()->prepare("UPDATE images SET matches = :matches, rating = :ratings, rightWon = :rightWon, bottomSwipe = :bottomSwipe WHERE id = :id;");
+        $ins1 = DB::pdo()->prepare("UPDATE quotes SET matches = :matches, rating = :ratings, leftWon = :leftWon, topSwipe = :topSwipe WHERE id = :id;");
+        $ins2 = DB::pdo()->prepare("UPDATE quotes SET matches = :matches, rating = :ratings, rightWon = :rightWon, bottomSwipe = :bottomSwipe WHERE id = :id;");
         $ins1->execute(array(
             ':id' => $input->id1,
             ':matches' => $first->matches + 1,
@@ -87,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
             ':rightWon' => $rightWon ? $second->rightWon + 1: $second->rightWon,
             ':bottomSwipe' => $rightWon && $input->swipe ? $second->bottomSwipe + 1: $second->bottomSwipe
         ));
-		newImages();
+		newQuotes();
 
 	} else if ($input->action == "rankings"){
 	    $dir = 'DESC';
@@ -101,10 +104,10 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
 
 
         if (!isset($input->nr)) {
-            $sql = DB::pdo()->prepare('SELECT * FROM images ORDER BY ' . $order .  ' ' . $dir . ';');
+            $sql = DB::pdo()->prepare('SELECT * FROM quotes ORDER BY ' . $order .  ' ' . $dir . ';');
             $data = $sql->execute();
         } else if (is_numeric($input->nr)) {
-            $sql = DB::pdo()->prepare('SELECT * FROM images ORDER BY ' . $order .  ' ' . $dir . ' LIMIT ?;');
+            $sql = DB::pdo()->prepare('SELECT * FROM quotes ORDER BY ' . $order .  ' ' . $dir . ' LIMIT ?;');
             $sql->bindValue(1, $input->nr, PDO::PARAM_INT);
             $data = $sql->execute();
         } else {
@@ -118,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
 			$i++;
 		}
 		$obj = new StdClass;
-		$obj->matches = (int)DB::pdo()->query("SELECT (SELECT SUM(matches) FROM images) / 2")->fetch(PDO::FETCH_COLUMN);
+		$obj->matches = (int)DB::pdo()->query("SELECT (SELECT SUM(matches) FROM quotes) / 2")->fetch(PDO::FETCH_COLUMN);
 		$obj->ranks = $result;
 		echo json_encode($obj);
 	}

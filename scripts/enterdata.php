@@ -1,6 +1,6 @@
 <?php
 
-/* This script is used to populate the images table with links.
+/* This script is used to populate the quotes table with links.
  *
  * This takes a file with all the image source links in separate lines.
  * Use the linux cmd 
@@ -9,15 +9,11 @@
  */
 include_once '../init.php';
 
-$ins = DB::pdo()->prepare("insert into images (src) values(?)");
+$ins = DB::pdo()->prepare("insert into quotes (quote) values(?)");
 $file = fopen("php://stdin","r");
 $line = trim(fgets($file));
 
 while($line != "") {
-	if (substr($line, 0, 5) === 'http:') {
-        $line = trim(fgets($file));
-        continue;
-    }
     echo $line . PHP_EOL;
 	$ins->execute(array($line));
 	$line = trim(fgets($file));

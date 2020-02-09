@@ -4,20 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Sjysta Lökar</title>
+	<title>Quotes</title>
 	<link rel="stylesheet" type="text/css" href="main.css">
-	<script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js"></script>
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/axios@0.19.0/dist/axios.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
 	<script type="text/javascript" src="velocity.min.js"></script>
 	<script type="text/javascript" src="index.js"></script>
 	<link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
 </head>
 <body onload="start()">
 	<div id="container">
-		<h1>Sjysta Lökar</h1>
+		<h1>Quotes</h1>
 		<div id="area">
 			<div id="leftpane" class="pane" onClick="change(1)">
-				<img style="display: none" class="image" id="img1" data-l="false" src="#" />
+				<span class="quote" id="quote1">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum, itaque iure officia placeat quaerat tenetur voluptatum. Accusamus blanditiis ducimus eaque error est, hic, maiores, nihil quas recusandae repellendus veniam voluptatem!
+				</span>
 				<div class="spinner"></div>
 			</div>
 
@@ -26,7 +28,9 @@
 			</div>
 
 			<div id="rightpane" class="pane" onClick="change(2)">
-				<img style="display: none" class="image" id="img2" data-l="false" src="#" />
+				<span class="quote" id="quote2">
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur deserunt dolores eligendi exercitationem ipsa iure laboriosam laborum laudantium libero nobis porro quam quasi quia, quidem quisquam quo recusandae vero voluptatem?
+				</span>
 				<div class="spinner"></div>
 			</div>
 		</div>
@@ -34,12 +38,6 @@
 	</div>
 	<script>
 		$(function () {
-            $('#img1').on('load', function () {
-                loaded(1);
-            });
-            $('#img2').on('load', function () {
-                loaded(2);
-            });
             swipeDetect($("#leftpane"), function(swipeDir){
                 swipe(1, swipeDir);
             });

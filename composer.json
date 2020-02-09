@@ -1,6 +1,6 @@
 {
-  "name": "Ravenholt/loek",
-  "description": "Loek ranking system",
+  "name": "ravenholt/quotes",
+  "description": "Quote ranking system",
   "minimum-stability": "dev",
   "license": "All Rights Reserved",
   "authors": [
@@ -10,13 +10,13 @@
     },
     {
       "name": "Berg",
-      "email": "gurreja@gmail.com"
+      "email": "contact@gorymoon.se"
     }
   ],
   "require": {
     "ext-pdo": "*",
     "ext-json": "*",
-    "vlucas/phpdotenv": "^2.5@dev",
+    "vlucas/phpdotenv": "^4.1.0",
     "zelenin/elo": "dev-master"
   }
 }
