@@ -1,6 +1,6 @@
-# Quetes
+# Quotes
 
-This is an implementation of Elo to rate qutoes, it was made as an inside joke but can be reused my anyone.
+This is an implementation of Elo to rate quotes, it was made as an inside joke but can be reused my anyone.
 
 The [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) was used to rank the images.
 
