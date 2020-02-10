@@ -34,6 +34,10 @@ function load() {
     update([{id: -1, quote: ''}, {id: -1, quote: ''}], false);
 }
 
+function haveAllLoaded() {
+    return $("#quote1").attr('data-id') !== '-1' && $("#quote2").attr('data-id') !== '-1';
+}
+
 function getOrDefault(urlParams, key, def) {
     let v = urlParams.get(key);
     return v === null ? def: v;
