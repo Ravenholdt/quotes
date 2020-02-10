@@ -65,6 +65,7 @@ function getRankings() {
                     rank: i+1,
                     quote: rank.quote,
                     context: rank.context,
+                    win_rate: rank.win_rate,
                     rating: rank.rating,
                     matches: rank.matches
                 }))

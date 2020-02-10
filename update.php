@@ -123,6 +123,8 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
         $result = array();
 		$i = 1;
 		foreach($sql->fetchAll(PDO::FETCH_ASSOC) as $row) {
+		    $won = $row['leftWon'] + $row['rightWon'];
+		    $row['win_rate'] = $won > 0 ? round(($won / $row['matches']) * 100, 2): 0;
 			$result[] = $row;
 			$i++;
 		}
