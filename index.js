@@ -22,8 +22,8 @@ function change(a, swipe = false){
 }
 
 function update(data, show){
-    $('#quote1').attr('data-id', data[0].id).text(data[0].quote);
-    $('#quote2').attr('data-id', data[1].id).text(data[1].quote);
+    $('#quote1').attr('data-id', data[0].id).html(data[0].quote);
+    $('#quote2').attr('data-id', data[1].id).html(data[1].quote);
     $('#context1').text(data[0].context);
     $('#context2').text(data[1].context);
     $('.quote-container').css('display', show ? 'block': 'none');

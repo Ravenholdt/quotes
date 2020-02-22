@@ -42,7 +42,7 @@ class ReturnInfo {
 }
 
 function newQuotes(){
-	$sql = "SELECT * FROM `quotes` ORDER by RAND() LIMIT 2;";
+	$sql = "SELECT * FROM `quotes` WHERE deleted = FALSE ORDER by RAND() LIMIT 2;";
     $result = array();
 
     $row = DB::pdo()->query($sql);
@@ -110,10 +110,10 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
 
 
         if (!isset($input->nr)) {
-            $sql = DB::pdo()->prepare('SELECT * FROM quotes ORDER BY ' . $order .  ' ' . $dir . ';');
+            $sql = DB::pdo()->prepare('SELECT * FROM quotes WHERE deleted = FALSE ORDER BY ' . $order .  ' ' . $dir . ';');
             $data = $sql->execute();
         } else if (is_numeric($input->nr)) {
-            $sql = DB::pdo()->prepare('SELECT * FROM quotes ORDER BY ' . $order .  ' ' . $dir . ' LIMIT ?;');
+            $sql = DB::pdo()->prepare('SELECT * FROM quotes WHERE deleted = FALSE ORDER BY ' . $order .  ' ' . $dir . ' LIMIT ?;');
             $sql->bindValue(1, $input->nr, PDO::PARAM_INT);
             $data = $sql->execute();
         } else {

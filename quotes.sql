@@ -9,5 +9,9 @@ CREATE TABLE IF NOT EXISTS quotes(
   leftWon     INT NOT NULL DEFAULT '0',
   rightWon    INT NOT NULL DEFAULT '0',
   topSwipe    INT NOT NULL DEFAULT '0',
-  bottomSwipe INT NOT NULL DEFAULT '0'
+  bottomSwipe INT NOT NULL DEFAULT '0',
+  deleted     BOOL NOT NULL DEFAULT FALSE
 );
+
+ALTER TABLE quotes
+  ADD deleted BOOL NOT NULL DEFAULT FALSE;
