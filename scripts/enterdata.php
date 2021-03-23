@@ -3,6 +3,7 @@
 
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\Client;
+use Loek\DB;
 use splitbrain\phpcli\CLI;
 use splitbrain\phpcli\Options;
 
