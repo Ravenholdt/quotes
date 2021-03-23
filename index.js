@@ -1,5 +1,5 @@
 function start(){
-	axios.post('update.php', {'action': 'start'})
+	axios.post('api/update.php', {'action': 'start'})
 		.then(function (response) {
 			update(response.data, true);
         });
@@ -8,7 +8,7 @@ function start(){
 function change(a, swipe = false){
     let quote1 = $('#quote1');
     let quote2 = $('#quote2');
-	axios.post('update.php', {
+	axios.post('api/update.php', {
 		'action': 'change',
 		'id1': quote1.attr('data-id'),
 		'id2': quote2.attr('data-id'),
@@ -53,7 +53,7 @@ function getRankings() {
         nr = null;
     }
 
-    axios.post('update.php', {action: 'rankings', 'order': order, 'dir': dir, nr: nr})
+    axios.post('api/update.php', {action: 'rankings', 'order': order, 'dir': dir, nr: nr})
         .then(function (response) {
             let template = $('#template').html();
             Mustache.parse(template);

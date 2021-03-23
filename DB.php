@@ -1,4 +1,7 @@
 <?php
+namespace Loek;
+use PDO;
+
 class DB {
 
     /**

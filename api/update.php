@@ -1,45 +1,11 @@
 <?php
 
+require_once '../init.php';
+
+use Loek\DB;
+use Loek\ReturnInfo;
 use Zelenin\Elo\Match;
 use Zelenin\Elo\Player;
-
-require_once 'init.php';
-
-class ReturnInfo {
-
-    /**
-     * @var int
-     */
-    public $id;
-
-    /**
-     * @var string
-     */
-    public $quote;
-
-    /**
-     * @var string
-     */
-    public $context;
-
-    /**
-     * @var int
-     */
-    public $rating;
-
-    /**
-     * @var int
-     */
-    public $matches;
-
-    public function __construct(StdClass $data) {
-        $this->id = (int) $data->id;
-        $this->quote = $data->quote;
-        $this->context = $data->context;
-        $this->rating = (int) $data->rating;
-        $this->matches = (int) $data->matches;
-    }
-}
 
 function newQuotes(){
 	$sql = "SELECT * FROM `quotes` WHERE deleted = FALSE ORDER by RAND() LIMIT 2;";
@@ -118,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
             $data = $sql->execute();
         } else {
             http_response_code(400);
+            return;
         }
 
         $result = array();

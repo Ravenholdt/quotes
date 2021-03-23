@@ -1,4 +1,4 @@
-<FilesMatch "^\.">
+<FilesMatch "(^\.|quotes\.sql|Readme\.md|composer\.(json|lock)|(init|DB|ReturnInfo)\.php)">
     Order allow,deny
     Deny from all
 </FilesMatch>

@@ -13,6 +13,11 @@
       "email": "contact@gorymoon.se"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "Loek\\": "./"
+    }
+  },
   "require": {
     "ext-pdo": "*",
     "ext-json": "*",
