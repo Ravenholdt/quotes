@@ -9,9 +9,11 @@ use Zelenin\Elo\Player;
 
 function newQuotes(){
 	$sql = "SELECT * FROM `quotes` WHERE deleted = FALSE ORDER by RAND() LIMIT 2;";
+	$weightedSql = "SELECT *, LOG(1-RAND()) / (matches + 1) AS prio FROM `quotes` WHERE deleted = FALSE ORDER by prio LIMIT 2";
+
     $result = array();
 
-    $row = DB::pdo()->query($sql);
+    $row = DB::pdo()->query($weightedSql);
 
     $result[] = new ReturnInfo($row->fetch(PDO::FETCH_OBJ));
     $result[] = new ReturnInfo($row->fetch(PDO::FETCH_OBJ));
