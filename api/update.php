@@ -46,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
         $match = new Match(new Player($first->rating), new Player($second->rating));
         $match->setScore($score1, $score2)->setK(32)->count();
 
-        $leftWon = $score1 == 1;
-        $rightWon = $score2 == 1;
+        $leftWon = $score1 > $score2;
+        $rightWon = $score2 > $score1;
         $ins1 = DB::pdo()->prepare("UPDATE quotes SET matches = :matches, rating = :ratings, leftWon = :leftWon, topSwipe = :topSwipe WHERE id = :id;");
         $ins2 = DB::pdo()->prepare("UPDATE quotes SET matches = :matches, rating = :ratings, rightWon = :rightWon, bottomSwipe = :bottomSwipe WHERE id = :id;");
         $ins1->execute(array(
