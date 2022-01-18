@@ -1,42 +1,48 @@
 <?php
 
 namespace Loek;
-use StdClass;
 
-class ReturnInfo
+use JsonSerializable;
+
+class ReturnInfo implements JsonSerializable
 {
 
     /**
      * @var int
      */
-    public $id;
+    public int $id;
 
     /**
      * @var string
      */
-    public $quote;
+    public string $quote;
 
     /**
      * @var string
      */
-    public $context;
+    public string $context;
 
     /**
      * @var int
      */
-    public $rating;
+    public int $rating;
 
     /**
      * @var int
      */
-    public $matches;
+    public int $matches;
 
-    public function __construct(StdClass $data)
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array
     {
-        $this->id = (int)$data->id;
-        $this->quote = $data->quote;
-        $this->context = $data->context;
-        $this->rating = (int)$data->rating;
-        $this->matches = (int)$data->matches;
+        return [
+            'id' => $this->id,
+            'quote' => $this->quote,
+            'context' => $this->context,
+            'rating' => $this->rating,
+            'matches' => $this->matches
+        ];
     }
 }

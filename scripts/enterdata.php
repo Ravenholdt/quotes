@@ -18,7 +18,8 @@ include_once '../init.php';
  * Can also be run by
  *     ./enterdata.php -h
  */
-class EnterData extends CLI {
+class EnterData extends CLI
+{
 
     /**
      * @inheritDoc
@@ -28,15 +29,42 @@ class EnterData extends CLI {
         $options->setHelp("This tool is used to populate the quotes table with quotes from a file or an url.");
 
         $options->registerCommand('file', 'Gets all rows from a file and enters them in the database');
-        $options->registerArgument('file', 'A file with all the quotes on separate lines, context is separated with \' - \' by default', true, 'file');
-        $options->registerOption('override', 'Override file with entries that failed to be entered, empty file if all worked', 'o', false, 'file');
+        $options->registerArgument(
+            'file',
+            'A file with all the quotes on separate lines, context is separated with \' - \' by default',
+            true,
+            'file'
+        );
+        $options->registerOption(
+            'override',
+            'Override file with entries that failed to be entered, empty file if all worked',
+            'o',
+            false,
+            'file'
+        );
 
         $options->registerCommand('url', 'Gets all rows from an url and enters them in the database');
-        $options->registerArgument('url', 'An url to fetch with all the quotes on separate lines, context is separated with \' - \' by default', true, 'url');
-        $options->registerOption('delimiter', 'What to split each line on the fetched url with, default is \'\\n\'', 'u', 'delimiter', 'url');
+        $options->registerArgument(
+            'url',
+            'An url to fetch with all the quotes on separate lines, context is separated with \' - \' by default',
+            true,
+            'url'
+        );
+        $options->registerOption(
+            'delimiter',
+            'What to split each line on the fetched url with, default is \'\\n\'',
+            'u',
+            'delimiter',
+            'url'
+        );
 
         $options->registerOption('dry-run', 'Dry run', 'd');
-        $options->registerOption('separator', 'What to match when separating context on a line, default is \' - \'', 's', 'separator');
+        $options->registerOption(
+            'separator',
+            'What to match when separating context on a line, default is \' - \'',
+            's',
+            'separator'
+        );
     }
 
     /**
@@ -68,13 +96,13 @@ class EnterData extends CLI {
                     $this->notice('Fetching from url...');
                     $res = $client->get($options->getArgs()[0]);
                     if ($res->getStatusCode() === 200) {
-                        $body = (string) $res->getBody();
+                        $body = (string)$res->getBody();
                         foreach (explode(stripcslashes($options->getOpt('delimiter', "\n")), $body) as $line) {
                             $lines->add($line);
                         }
                         $this->success('Loaded all lines');
                     } else {
-                        $this->error('The url responded with a ' . $res->getStatusCode(), array($res));
+                        $this->error('The url responded with a ' . $res->getStatusCode(), [$res]);
                         die(1);
                     }
                 } catch (Exception $e) {
@@ -88,7 +116,7 @@ class EnterData extends CLI {
 
         DB::pdo()->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $ins = DB::pdo()->prepare("insert into quotes (quote, context) values(?, ?)");
-        $errors = array();
+        $errors = [];
 
         $this->notice('Processing lines...');
         $lines = $lines->map(function ($line) {
@@ -150,7 +178,8 @@ class EnterData extends CLI {
     }
 }
 
-function exception_error_handler($severity, $message, $file, $line) {
+function exception_error_handler($severity, $message, $file, $line)
+{
     if (!(error_reporting() & $severity)) {
         // This error code is not included in error_reporting
         return;
@@ -158,6 +187,7 @@ function exception_error_handler($severity, $message, $file, $line) {
     /** @noinspection PhpUnhandledExceptionInspection */
     throw new ErrorException($message, 0, $severity, $file, $line);
 }
+
 set_error_handler("exception_error_handler");
 
 $cli = new EnterData();
