@@ -114,13 +114,26 @@ class EnterData extends CLI
                 exit;
         }
 
+        $this->info('Checking lines...');
+        $validLines = new ArrayCollection();
+        $fullLine = '';
+        foreach ($lines as $line) {
+            $fullLine .= $line;
+            $count = substr_count($fullLine, '"');
+            if ($count % 2 == 0) {
+                $validLines->add($fullLine);
+                $fullLine = '';
+            }
+        }
+        $this->success('Done checking lines');
+
         DB::pdo()->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $ins = DB::pdo()->prepare("insert into quotes (quote, context) values(?, ?)");
         $errors = [];
 
         $this->notice('Processing lines...');
-        $lines = $lines->map(function ($line) {
-            return trim($line);
+        $lines = $validLines->map(function ($line) {
+            return preg_replace("/\n/", '<br>', trim($line));
         })->filter(function ($line) use ($options, $ins, &$errors) {
             if (empty($line)) {
                 return false;
