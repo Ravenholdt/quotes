@@ -116,16 +116,17 @@ class EnterData extends CLI
 
         $this->info('Checking lines...');
         $validLines = new ArrayCollection();
-        $fullLine = '';
         foreach ($lines as $line) {
-            $fullLine .= $line;
-            $count = substr_count($fullLine, '"');
-            if ($count % 2 == 0) {
-                $validLines->add($fullLine);
-                $fullLine = '';
-            }
+            $line = trim($line);
+            if (strlen($line) > 0)
+                $validLines->add($line);
         }
         $this->success('Done checking lines');
+
+        if ($validLines->count() <= 0) {
+            $this->warning("No lines loaded, empty file or invalid quotes.");
+            exit(1);
+        }
 
         DB::pdo()->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $ins = DB::pdo()->prepare("insert into quotes (quote, context) values(?, ?)");

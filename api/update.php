@@ -14,7 +14,7 @@ use Zelenin\Elo\Player;
 function newQuotes(): array
 {
     //$sql = "SELECT * FROM `quotes` WHERE deleted = FALSE ORDER by RAND() LIMIT 2;";
-    $sql = "SELECT *, (1-RAND()) / LOG(matches + 3) AS prio FROM `quotes` WHERE deleted = FALSE ORDER by prio LIMIT 2";
+    $sql = "SELECT *, LOG(1-RAND()) / (matches + 1) AS prio FROM `quotes` WHERE deleted = FALSE ORDER by prio LIMIT 2";
     $row = DB::pdo()->query($sql);
 
     return [
