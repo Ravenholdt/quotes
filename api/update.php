@@ -4,7 +4,7 @@ require_once '../init.php';
 
 use Loek\DB;
 use Loek\ReturnInfo;
-use Zelenin\Elo\Match;
+use Zelenin\Elo\EloMatch;
 use Zelenin\Elo\Player;
 
 /**
@@ -42,8 +42,8 @@ function battleQuotes(int $score1, int $score2, int $id1, int $id2, bool $swipe)
     $sql->execute(array(':id' => $id2));
     $second = $sql->fetchObject();
 
-    $match = new Match(new Player($first->rating), new Player($second->rating));
-    $match->setScore($score1, $score2)->setK(32)->count();
+    $m = new EloMatch(new Player($first->rating), new Player($second->rating));
+    $m->setScore($score1, $score2)->setK(32)->count();
 
     $leftWon = $score1 > $score2;
     $rightWon = $score2 > $score1;
@@ -56,14 +56,14 @@ function battleQuotes(int $score1, int $score2, int $id1, int $id2, bool $swipe)
     $ins1->execute(array(
         ':id' => $id1,
         ':matches' => $first->matches + 1,
-        ':ratings' => $match->getPlayer1()->getRating(),
+        ':ratings' => $m->getPlayer1()->getRating(),
         ':leftWon' => $leftWon ? $first->leftWon + 1 : $first->leftWon,
         ':topSwipe' => $leftWon && $swipe ? $first->topSwipe + 1 : $first->topSwipe
     ));
     $ins2->execute(array(
         ':id' => $id2,
         ':matches' => $second->matches + 1,
-        ':ratings' => $match->getPlayer2()->getRating(),
+        ':ratings' => $m->getPlayer2()->getRating(),
         ':rightWon' => $rightWon ? $second->rightWon + 1 : $second->rightWon,
         ':bottomSwipe' => $rightWon && $swipe ? $second->bottomSwipe + 1 : $second->bottomSwipe
     ));
