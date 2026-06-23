@@ -24,7 +24,7 @@
     "zelenin/elo": "dev-master",
     "splitbrain/php-cli": "^1.1.8",
     "doctrine/collections": "^1.7.3",
-    "guzzlehttp/guzzle": "^6.5",
+    "guzzlehttp/guzzle": "^7.12",
     "vlucas/phpdotenv": "5.4.x-dev"
   }
 }
